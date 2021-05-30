@@ -55,7 +55,7 @@ class GeocachingCache:
     _Location = {
         "Country": None,
         "Coordinates": {
-            "lat":0.00, 
+            "lat" :0.00, 
             "long":0.00
         }
     }
@@ -94,7 +94,6 @@ class GeocachingCache:
 
         for logentry in groundspeak.find('{http://www.groundspeak.com/cache/1/0}logs'):
             newlogentry = GeocachingLogEntry(logentry)
-            print(newlogentry)
             self._Logs.append(newlogentry)
 
     def __str__(self):
@@ -105,7 +104,10 @@ class GeocachingCache:
 
     def GetLogs(self):
         return self._Logs
-        
+
+    @property
+    def Found(self):
+        return self._FoundIt
     @property
     def Country(self):
         return self._Location["Country"]
@@ -136,11 +138,15 @@ class GeocachingPocketQuery:
     _root = None
 
     _GPXExportedOn = None
+    _GeocachingName = None
 
     _Caches = []
 
-    def __init__(self):
-        pass
+    def __init__(self, GeocachingName=None):
+        if not GeocachingName:
+            raise Exception("No GC Name provided!")
+        
+        self._GeocachingName = GeocachingName
 
     def ReadFile(self, FName=None):
         if not FName:
@@ -169,14 +175,32 @@ class GeocachingPocketQuery:
             newcache = GeocachingCache(cache)
             self._Caches.append(newcache)
 
+    def GetAllFindes(self):
+        return self._Caches
+
+    def GetMyFinds(self):
+        MyFinds = []
+        for Cache in self._Caches:
+            if self._GeocachingName == Cache.GetLogs()[0].FoundBy:
+                MyFinds.append(Cache)
+        return MyFinds
+        
     def __str__(self):
         return f"Exported on {self._GPXExportedOn}" 
 
 if __name__ == "__main__":
-    GPX = GeocachingPocketQuery()
+    GPX = GeocachingPocketQuery("discordia23")
     GPX.ReadFile("1489306.gpx")
     # print(GPX)
+    for c in GPX.GetMyFinds():
+        print(c)
 
+    import sys
+    sys.exit(0)
+
+
+    ## FRom here there is only maddness. 
+    # Leftover "getting used to xml parsing" script fragments 
     testtree = ET.parse("1489306.gpx")
     root = testtree.getroot()
 
