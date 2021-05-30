@@ -103,6 +103,34 @@ class GeocachingCache:
         else:
             return f"{self._Owner} (T{self._Terrain}/D{self._Difficulty})"
 
+    def GetLogs(self):
+        return self._Logs
+        
+    @property
+    def Country(self):
+        return self._Location["Country"]
+    @property
+    def GPSCoordinates(self):
+        return (self._Location["Coodinates"]["lat"],self._Location["Coodinates"]["long"])
+    @property
+    def ID(self):
+        return self._GCID
+    @property
+    def name(self):
+        return self._Name
+    @property
+    def Difficulty(self):
+        return self._Difficulty
+    @property
+    def Terrain(self):
+        return self._Terrain
+    @property
+    def ShortDescription(self):
+        return self._ShortDescription
+    @property
+    def LongDescription(self):
+        return self._LongDescription
+
 class GeocachingPocketQuery:
     _tree = None
     _root = None
@@ -125,7 +153,7 @@ class GeocachingPocketQuery:
 
         self._parseData()
 
-    def ReadStreamI(self, Data=None):
+    def ReadStream(self, Data=None):
         if isinstance(Data, str):
             raise Exception("Type Error")
         
@@ -142,18 +170,15 @@ class GeocachingPocketQuery:
             self._Caches.append(newcache)
 
     def __str__(self):
-        return f"Created on {self._GPXExportedOn}" 
+        return f"Exported on {self._GPXExportedOn}" 
 
 if __name__ == "__main__":
     GPX = GeocachingPocketQuery()
     GPX.ReadFile("1489306.gpx")
     # print(GPX)
 
-
     testtree = ET.parse("1489306.gpx")
     root = testtree.getroot()
-
-    # print(root.find('{http://www.topografix.com/GPX/1/0}time').text)
 
     for cache in root.findall('{http://www.topografix.com/GPX/1/0}wpt'):
         # print(cache.attrib["lat"], cache.attrib["lon"])
