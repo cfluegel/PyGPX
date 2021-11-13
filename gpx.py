@@ -60,7 +60,7 @@ class GeocachingCache:
         }
     }
     _Owner = None
-    
+    _ContainerSize = None 
     _ShortDescription = None
     _LongDescription = None
 
@@ -91,6 +91,7 @@ class GeocachingCache:
         self._Name =  groundspeak.find('{http://www.groundspeak.com/cache/1/0}name').text
         self._ShortDescription = groundspeak.find('{http://www.groundspeak.com/cache/1/0}short_description').text
         self._LongDescription = groundspeak.find('{http://www.groundspeak.com/cache/1/0}long_description').text
+        self._ContainerSize = groundspeak.find('{http://www.groundspeak.com/cache/1/0}container').text
 
         for logentry in groundspeak.find('{http://www.groundspeak.com/cache/1/0}logs'):
             newlogentry = GeocachingLogEntry(logentry)
